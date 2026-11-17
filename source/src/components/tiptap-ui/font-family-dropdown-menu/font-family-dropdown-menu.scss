@@ -1,0 +1,96 @@
+.tiptap-font-family-dropdown-menu {
+  width: 160px;
+  min-width: 160px;
+  padding: 4px;
+  font-family: Arial, sans-serif;
+
+  .tiptap-font-family-option {
+
+        display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 36px;
+    padding: 0 10px;
+    line-height: 20px;
+    border: 0;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 20px;
+    text-align: left;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+
+    &:focus,
+    &:focus-visible,
+    &[data-highlighted] {
+      outline: none;
+      box-shadow: none;
+      border-color: transparent;
+      background: var(--tt-dropdown-menu-hover-bg);
+      color: var(--tt-dropdown-menu-hover-text);
+    }
+
+    &[data-selected="true"] {
+      font-weight: 600;
+    }
+  }
+}
+
+.tiptap-font-family-trigger-label {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.tiptap-font-family-trigger {
+  width: 160px;
+  flex: 0 0 160px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  .tiptap-font-family-trigger-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: start;
+  }
+
+  .tiptap-button-dropdown-small {
+    flex: 0 0 auto;
+  }
+}
+
+/* دکمه و عنوان فونت انتخاب‌شده */
+.tiptap-font-family-trigger,
+.tiptap-font-family-trigger .tiptap-font-family-trigger-label {
+  font-family: var(
+    --editor-ui-font,
+    "EditorVazirmatn",
+    Tahoma,
+    sans-serif
+  );
+}
+
+/* پنل و گزینه‌های منوی فونت */
+.tiptap-font-family-dropdown-menu,
+.tiptap-font-family-dropdown-menu .tiptap-font-family-option {
+  font-family: var(
+    --editor-ui-font,
+    "EditorVazirmatn",
+    Tahoma,
+    sans-serif
+  );
+}
+
+.tiptap-font-family-dropdown-menu .tiptap-font-family-option,
+.tiptap-font-family-dropdown-menu
+  .tiptap-font-family-option[data-selected="true"] {
+  font-weight: 400;
+}

@@ -1,0 +1,103 @@
+/* دکمهٔ انتخاب اندازه فونت */
+.tiptap-font-size-trigger {
+  width: 72px;
+  flex: 0 0 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+
+  .tiptap-font-size-trigger-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  .tiptap-button-dropdown-small {
+    flex: 0 0 auto;
+  }
+}
+
+/* فونت رابط کاربری */
+.tiptap-font-size-trigger,
+.tiptap-font-size-trigger .tiptap-font-size-trigger-label,
+.tiptap-font-size-dropdown-menu {
+  font-family: var(
+    --editor-ui-font,
+    "EditorVazirmatn",
+    Tahoma,
+    sans-serif
+  );
+}
+
+/* رنگ‌های پیش‌فرض: حالت روشن */
+.tiptap-font-size-dropdown-menu {
+  --font-size-menu-bg: #fff;
+  --font-size-menu-border: #e5e7eb;
+  --font-size-menu-text: #262626;
+  --font-size-menu-hover: #f3f4f6;
+  --font-size-menu-selected: #e5e7eb;
+  --font-size-menu-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+
+  width: 116px;
+  min-width: 116px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+
+  direction: rtl;
+  text-align: right;
+
+  border: 1px solid var(--font-size-menu-border);
+  border-radius: 16px;
+  background: var(--font-size-menu-bg);
+  color: var(--font-size-menu-text);
+  box-shadow: var(--font-size-menu-shadow);
+}
+
+/* رنگ‌های حالت تاریک؛ برای منوی Portal هم کار می‌کند */
+html.dark .tiptap-font-size-dropdown-menu,
+body.dark .tiptap-font-size-dropdown-menu {
+  --font-size-menu-bg: #1c1c1e;
+  --font-size-menu-border: #303034;
+  --font-size-menu-text: #f2f2f2;
+  --font-size-menu-hover: #303034;
+  --font-size-menu-selected: #353539;
+  --font-size-menu-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+}
+
+/* گزینه‌های اندازه فونت */
+.tiptap-font-size-dropdown-menu .tiptap-font-size-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 38px;
+  padding: 0 10px;
+
+  border-radius: 6px;
+  background: transparent;
+  color: var(--font-size-menu-text);
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: right;
+
+  cursor: pointer;
+  outline: none;
+
+  &[data-highlighted] {
+    background: var(--font-size-menu-hover);
+    color: var(--font-size-menu-text);
+  }
+
+  &[data-selected="true"] {
+    background: var(--font-size-menu-selected);
+    color: var(--font-size-menu-text);
+    font-weight: 400;
+  }
+}

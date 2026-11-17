@@ -1,0 +1,27 @@
+.tiptap-list-dropdown-menu {
+  color: var(--tt-gray-light-a-900);
+
+  .tiptap-button {
+    color: inherit;
+  }
+}
+
+:is(.dark, [data-theme="dark"]) .tiptap-list-dropdown-menu {
+  color: var(--tt-gray-dark-a-900);
+}
+
+.tiptap-list-dropdown-menu {
+  background-color: #fff;
+
+  :is([role="menuitem"], .tiptap-button):is(:hover, :focus-visible, [data-highlighted]) {
+    background-color: #e9edf1;
+  }
+}
+
+:is(.dark, [data-theme="dark"]) .tiptap-list-dropdown-menu {
+  background-color: #242424;
+
+  :is([role="menuitem"], .tiptap-button):is(:hover, :focus-visible, [data-highlighted]) {
+    background-color: #383838;
+  }
+}

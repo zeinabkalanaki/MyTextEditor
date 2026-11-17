@@ -1,0 +1,23 @@
+.tiptap-heading-dropdown-menu .tiptap-button {
+  width: 100%;
+  color: inherit;
+}
+
+/* آیتمی که موس روی آن است یا با کیبورد روی آن حرکت کرده‌ای */
+.tiptap-heading-dropdown-menu .tiptap-button:is(
+  :hover,
+  :focus-visible,
+  [data-highlighted]
+) {
+  background-color: var(--tt-dropdown-menu-hover-bg);
+  color: var(--tt-dropdown-menu-hover-text);
+}
+
+/* Heading فعال، حتی وقتی موس روی آیتم دیگری است */
+.tiptap-heading-dropdown-menu .tiptap-button[data-active-state="on"] {
+  background-color: var(--tt-dropdown-menu-hover-bg);
+}
+
+.tiptap-heading-dropdown-menu .tiptap-button[data-active-state="on"] .tiptap-button-icon {
+  color: #a78bfa;
+}

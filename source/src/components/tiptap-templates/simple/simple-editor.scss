@@ -1,0 +1,905 @@
+.simple-editor-wrapper {
+  --tt-toolbar-height: 44px;
+  --tt-theme-text: #1b1d21;
+  --tt-scrollbar-color: #b8bec8;
+
+  --editor-surface: #f1f2f4;
+  --editor-paper: #ffffff;
+  --editor-paper-text: #1b1d21;
+  --editor-paper-shadow: 0 2px 12px rgb(20 25 35 / 10%);
+
+  /*
+   * Defaults before React applies the paper variables.
+   */
+  --paper-width: 794px;
+  --paper-height: 1123px;
+  --paper-padding-top: 56px;
+  --paper-padding-right: 64px;
+  --paper-padding-bottom: 80px;
+  --paper-padding-left: 64px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: calc(var(--paper-height) + var(--tt-toolbar-height) + 72px);
+  min-height: 0;
+
+  position: relative;
+  overflow: visible;
+
+  background-color: var(--editor-surface);
+  color: var(--tt-theme-text);
+
+  font-family: var(--editor-ui-font, Tahoma, Arial, sans-serif);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--tt-scrollbar-color) transparent;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--tt-scrollbar-color) transparent;
+  }
+
+  &::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 0.25rem;
+    height: 0.25rem;
+  }
+
+  &::-webkit-scrollbar-thumb,
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--tt-scrollbar-color);
+    border-radius: 9999px;
+  }
+
+  &::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* =====================
+     SEARCH AND REPLACE
+     ===================== */
+
+  .simple-editor-search-and-replace {
+    position: fixed;
+    top: calc(var(--tt-toolbar-height) + 0.5rem);
+    right: 0.5rem;
+    z-index: 51;
+    max-height: calc(100dvh - var(--tt-toolbar-height) - 1rem);
+  }
+
+  /* =====================
+     DOCUMENT CANVAS
+     ===================== */
+
+  /*
+   * One continuous canvas.
+   *
+   * The last 16px of each page are painted with the workspace
+   * color. This is a visual gap, not an additional layout gap.
+   *
+   * Pagination coordinates continue to use --paper-height.
+   */
+  .simple-editor-content {
+    width: var(--paper-width);
+    min-width: var(--paper-width);
+    min-height: var(--paper-height);
+
+    margin: 24px auto 48px;
+
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--editor-paper) 0,
+      var(--editor-paper) calc(var(--paper-height) - 16px),
+      var(--editor-surface) calc(var(--paper-height) - 16px),
+      var(--editor-surface) var(--paper-height)
+    );
+
+    color: var(--editor-paper-text);
+    box-shadow: var(--editor-paper-shadow);
+
+    overflow: visible;
+
+    /*
+     * Pagination must measure final dimensions, not animated ones.
+     */
+    transition: none;
+  }
+
+  /* =====================
+     PROSEMIRROR LAYOUT
+     ===================== */
+
+  .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    /*
+     * A column flex layout prevents margin collapse between
+     * top-level document blocks.
+     */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+
+    width: 100%;
+    min-height: var(--paper-height);
+    margin: 0;
+
+    padding: var(--paper-padding-top) var(--paper-padding-right)
+      var(--paper-padding-bottom) var(--paper-padding-left);
+
+    background-color: transparent;
+    color: var(--editor-paper-text);
+
+    font-family: var(--editor-default-font, Tahoma, Arial, sans-serif);
+    line-height: 1.65;
+
+    outline: none;
+    overflow: visible;
+    transition: none;
+
+    /*
+     * Blocks must retain their measured height.
+     */
+    > * {
+      flex-shrink: 0;
+    }
+
+    /*
+     * Keep paragraph spacing predictable in the flex layout.
+     * paragraph-node.scss still supplies the normal top margin.
+     */
+    > p {
+      margin-bottom: 0;
+    }
+
+    /*
+     * Set by the pagination effect.
+     *
+     * The effect calculates the complete margin-top value,
+     * including any natural margin required for positioning.
+     */
+    > .pagination-page-start {
+      position: relative;
+      margin-top: var(--pagination-margin-top, 0px) !important;
+      scroll-margin-top: 24px;
+    }
+
+    /*
+     * Manual page-break nodes remain in the ProseMirror document.
+     * On screen they occupy the space up to the next page's
+     * content start.
+     */
+    > :is(.page-break, [data-type="page-break"]) {
+      display: block;
+
+      height: var(--pagination-break-height, 0px);
+      min-height: 0;
+
+      margin: 0 !important;
+      padding: 0;
+      border: 0;
+
+      line-height: 0;
+      flex: 0 0 auto;
+
+      user-select: none;
+
+      &::before,
+      &::after {
+        display: none;
+        content: none;
+      }
+    }
+  }
+
+  /* =====================
+     PAPER SIZES
+     ===================== */
+
+  .simple-editor-content.paper-a4 {
+    --paper-width: 794px;
+    --paper-height: 1123px;
+    --paper-padding-top: 56px;
+    --paper-padding-right: 64px;
+    --paper-padding-bottom: 80px;
+    --paper-padding-left: 64px;
+  }
+
+  .simple-editor-content.paper-a5 {
+    --paper-width: 559px;
+    --paper-height: 794px;
+    --paper-padding-top: 40px;
+    --paper-padding-right: 44px;
+    --paper-padding-bottom: 56px;
+    --paper-padding-left: 44px;
+  }
+
+  /* =====================
+     PAPER SIZE SELECTOR
+     ===================== */
+
+  .paper-size-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+
+    padding: 2px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+
+    background: rgb(255 255 255 / 70%);
+
+    .tiptap-button {
+      min-width: 36px;
+      height: 30px;
+      padding: 0 8px;
+      border-radius: 4px;
+
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+
+      transition:
+        background-color 140ms ease,
+        color 140ms ease,
+        box-shadow 140ms ease;
+
+      &.is-active {
+        background-color: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 1px 3px rgb(37 99 235 / 30%);
+      }
+
+      &:not(.is-active):hover {
+        background-color: #e5e7eb;
+      }
+    }
+  }
+
+  /* =====================
+     TABLES
+     ===================== */
+
+  .tiptap table {
+    width: 100%;
+    margin: 16px 0;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .tiptap th,
+  .tiptap td {
+    min-width: 40px;
+    padding: 8px;
+
+    border: 1px solid #aaa;
+    vertical-align: top;
+
+    overflow-wrap: break-word;
+  }
+
+  .tiptap th {
+    background: #eeeeee;
+    font-weight: 600;
+  }
+
+  .tiptap .tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  /* =====================
+     TABLE MENU
+     ===================== */
+
+  .more-table-menu {
+    position: relative;
+
+    > button {
+      font-size: 24px;
+      line-height: 1;
+    }
+  }
+
+  .more-table-menu__panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 100;
+
+    width: 190px;
+    padding: 8px;
+
+    border: 1px solid #444;
+    border-radius: 8px;
+
+    background: #222222;
+    color: #ffffff;
+
+    box-shadow: 0 10px 25px rgb(0 0 0 / 32%);
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 7px;
+
+      color: inherit;
+      text-align: right;
+
+      &:disabled {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  .more-table-menu__sizes {
+    display: flex;
+    gap: 8px;
+
+    input {
+      width: 48px;
+    }
+  }
+
+  /* =====================
+     MOBILE
+     ===================== */
+
+  /*
+   * Preserve the real paper width.
+   * Narrow screens scroll horizontally instead of scaling paper.
+   */
+  @media screen and (max-width: 768px) {
+    .simple-editor-content {
+      margin: 16px auto 32px;
+    }
+
+    .simple-editor-search-and-replace {
+      right: 0.5rem;
+      left: 0.5rem;
+      width: auto;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    --tt-toolbar-height: 42px;
+
+    .simple-editor-search-and-replace {
+      top: 0.5rem;
+      right: 0.5rem;
+      left: 0.5rem;
+
+      width: auto;
+      max-height: calc(100dvh - 1rem);
+    }
+
+    .simple-editor-content {
+      margin: 10px auto 20px;
+    }
+
+    .paper-size-selector {
+      .tiptap-button {
+        min-width: 32px;
+        height: 28px;
+        padding: 0 6px;
+        font-size: 11px;
+      }
+    }
+  }
+}
+
+/* =====================
+   DARK MODE
+   ===================== */
+
+/*
+ * The workspace becomes dark, but the document stays white.
+ */
+:root.dark .simple-editor-wrapper,
+.simple-editor-wrapper.dark {
+  --tt-theme-text: #eceef2;
+  --tt-scrollbar-color: #59616d;
+
+  --editor-surface: #17181b;
+  --editor-paper: #ffffff;
+  --editor-paper-text: #1b1d21;
+  --editor-paper-shadow: 0 4px 24px rgb(0 0 0 / 28%);
+
+  .paper-size-selector {
+    border-color: #4b5563;
+    background: rgb(17 24 39 / 70%);
+
+    .tiptap-button {
+      color: #d1d5db;
+
+      &.is-active {
+        background-color: #2563eb;
+        color: #ffffff;
+      }
+
+      &:not(.is-active):hover {
+        background-color: #374151;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+/* =====================
+   BLOCKQUOTE
+   ===================== */
+
+.simple-editor-wrapper .simple-editor-content .tiptap.ProseMirror blockquote {
+  margin: 16px 0;
+
+  border: 0;
+  border-right: 3px solid #9ca3af;
+
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+.simple-editor-wrapper
+  .simple-editor-content
+  .tiptap.ProseMirror
+  blockquote:has(> p:first-of-type[style*="text-align: left"]) {
+  border-right: 0;
+  border-left: 3px solid #9ca3af;
+
+  padding-right: 0;
+  padding-left: 1rem;
+}
+
+.simple-editor-wrapper
+  .simple-editor-content
+  .tiptap.ProseMirror
+  blockquote::before {
+  display: none;
+  content: none;
+}
+
+/* =====================
+   SELECTED TABLE CELLS
+   ===================== */
+
+.ProseMirror table td.selectedCell,
+.ProseMirror table th.selectedCell,
+.tiptap table td.selectedCell,
+.tiptap table th.selectedCell {
+  position: relative;
+
+  background-color: #ddd6fe !important;
+  box-shadow: inset 0 0 0 2px #7c3aed;
+}
+
+/* =====================
+   PAGE BREAK BASE
+   ===================== */
+
+/*
+ * The editor-specific rule above supplies the screen height.
+ * No default decorative margin or border should affect geometry.
+ */
+.simple-editor-wrapper .ProseMirror .page-break {
+  position: relative;
+
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  user-select: none;
+}
+
+.simple-editor-wrapper .ProseMirror .page-break::after {
+  display: none;
+  content: none;
+}
+
+/* =====================
+   PRINT
+   ===================== */
+
+/*
+ * Remove screen-only pagination spacing.
+ *
+ * Repeated physical page margins and paper size must be configured
+ * separately with @page / the print workflow.
+ */
+@media print {
+  .simple-editor-wrapper {
+    height: auto;
+    overflow: visible;
+
+    background: #ffffff;
+  }
+
+  .simple-editor-wrapper .simple-editor-content {
+    width: var(--paper-width);
+    min-height: 0;
+    margin: 0;
+
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  .simple-editor-wrapper
+    .simple-editor-content
+    .tiptap.ProseMirror.simple-editor {
+    display: block;
+
+    /*
+     * Override the screen min-height written inline by TypeScript.
+     */
+    min-height: 0 !important;
+  }
+
+  .simple-editor-wrapper
+    .simple-editor-content
+    .tiptap.ProseMirror.simple-editor
+    > .pagination-page-start {
+    margin-top: 0 !important;
+  }
+
+  .simple-editor-wrapper
+    .simple-editor-content
+    .tiptap.ProseMirror.simple-editor
+    > :is(.page-break, [data-type="page-break"]) {
+    height: 0;
+    min-height: 0;
+
+    margin: 0 !important;
+    padding: 0;
+    border: 0;
+
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .simple-editor-wrapper .paper-size-selector,
+  .simple-editor-wrapper .simple-editor-search-and-replace,
+  .simple-editor-wrapper .more-table-menu {
+    display: none;
+  }
+}
+
+/* More options button */
+.editor-more-trigger {
+  border-radius: 10px;
+  flex-shrink: 0;
+
+  &[data-state="open"] {
+    background: rgba(127, 127, 127, 0.18);
+  }
+}
+
+/*
+ * Rendered through a Portal.
+ * Keep these rules outside .simple-editor-wrapper.
+ */
+.tiptap-popover.editor-more-panel {
+  box-sizing: border-box;
+
+  width: max-content;
+  min-width: 0;
+
+  max-width: min(
+    760px,
+    calc(100vw - 24px),
+    var(--radix-popover-content-available-width, 100vw)
+  );
+
+  max-height: min(50dvh, var(--radix-popover-content-available-height, 50dvh));
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  padding: 10px 12px;
+  border-radius: 22px;
+
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.editor-more-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  direction: ltr;
+}
+
+.editor-more-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+
+  min-width: 0;
+  max-width: 100%;
+}
+
+.editor-more-divider {
+  width: 1px;
+  height: 24px;
+  flex: 0 0 1px;
+
+  background: currentColor;
+  opacity: 0.16;
+}
+
+.editor-more-paper {
+  gap: 8px;
+}
+
+.editor-more-label {
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.editor-more-panel .paper-size-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.editor-more-panel .paper-size-selector .is-active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .tiptap-popover.editor-more-panel {
+    max-width: min(
+      calc(100vw - 24px),
+      var(--radix-popover-content-available-width, 100vw)
+    );
+
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .editor-more-tools {
+    gap: 10px;
+  }
+
+  .editor-more-divider {
+    display: none;
+  }
+}
+
+/* Global: Popovers are rendered in a Portal under body. */
+:root {
+  --editor-floating-bg: #ffffff;
+  --editor-floating-text: #202124;
+  --editor-floating-border: #e2e4e8;
+  --editor-floating-placeholder: #757b85;
+}
+
+:root.dark,
+html[data-theme="dark"] {
+  --editor-floating-bg: #202124;
+  --editor-floating-text: #f3f4f6;
+  --editor-floating-border: #3b3e45;
+  --editor-floating-placeholder: #a1a1aa;
+}
+
+/* Link popover + more-options panel */
+.tiptap-popover {
+  --tt-popover-bg-color: var(--editor-floating-bg);
+  --tt-popover-text-color: var(--editor-floating-text);
+  --tt-popover-border-color: var(--editor-floating-border);
+
+  background-color: var(--editor-floating-bg);
+  color: var(--editor-floating-text);
+
+  border: 1px solid var(--editor-floating-border);
+
+  box-shadow:
+    0 16px 40px rgb(0 0 0 / 18%),
+    0 4px 12px rgb(0 0 0 / 10%);
+
+  opacity: 1;
+}
+
+/* The link popover contains a card. */
+.tiptap-popover .tiptap-card {
+  background-color: var(--editor-floating-bg);
+  color: var(--editor-floating-text);
+}
+
+.tiptap-popover .tiptap-input,
+.tiptap-popover .tiptap-input.tiptap-link-input {
+  background-color: var(--editor-floating-bg);
+  color: var(--editor-floating-text);
+  caret-color: var(--editor-floating-text);
+}
+
+.tiptap-popover .tiptap-input::placeholder {
+  color: var(--editor-floating-placeholder);
+  opacity: 1;
+}
+
+/* Remove the color-palette trigger background. */
+.simple-editor-wrapper .editor-color-palette {
+  display: inline-flex;
+  align-items: center;
+
+  > button,
+  > button:hover,
+  > button:active,
+  > button[data-state="open"],
+  > button[data-active-state="on"] {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+/* رابط کاربری ادیتور و پنل‌هایی که با Portal باز می‌شوند */
+.simple-editor-wrapper,
+.editor-more-panel,
+.insert-table__popover,
+.color-palette-content,
+.tiptap-font-family-dropdown-menu {
+  font-family: var(--editor-ui-font, Tahoma, Arial, sans-serif);
+}
+
+/* کنترل‌های فرم الزاماً فونت والد را به ارث نمی‌برند */
+.simple-editor-wrapper :where(button, input, select, textarea),
+.editor-more-panel :where(button, input, select, textarea),
+.insert-table__popover :where(button, input, select, textarea),
+.color-palette-content :where(button, input, select, textarea),
+.tiptap-font-family-dropdown-menu :where(button, input, select, textarea) {
+  font-family: inherit;
+}
+
+/* تم روشن */
+.simple-editor-wrapper {
+  --editor-toolbar-bg: #fff;
+  --editor-toolbar-border: #e5e7eb;
+}
+
+/* تم تاریک */
+:root.dark .simple-editor-wrapper,
+.simple-editor-wrapper.dark {
+  --editor-toolbar-bg: #1c1c1f;
+  --editor-toolbar-border: #38383f;
+}
+
+/* پس‌زمینهٔ مات نوار ابزار در هر دو تم */
+.simple-editor-wrapper .tiptap-toolbar {
+  background: var(--editor-toolbar-bg);
+  border-bottom: 1px solid var(--editor-toolbar-border);
+  z-index: 50;
+}
+
+/* Toolbar follows the editor's available width, not window width. */
+.simple-editor-wrapper .simple-editor-toolbar {
+  position: relative;
+  inset: auto;
+  transform: none;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+
+  flex: 0 0 auto;
+  gap: 4px;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  height: auto;
+  min-height: var(--tt-toolbar-height);
+  max-height: none;
+
+  margin: 0;
+  padding: 6px 8px;
+
+  overflow: visible;
+}
+
+.simple-editor-wrapper .simple-editor-toolbar .simple-editor-toolbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.simple-editor-wrapper .simple-editor-toolbar .simple-editor-toolbar-spacer {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Only the document area scrolls. */
+.simple-editor-wrapper .simple-editor-viewport {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/*
+ * The More Options popover uses a Portal.
+ * Keep these selectors outside .simple-editor-wrapper.
+ */
+.tiptap-popover.editor-more-panel {
+  box-sizing: border-box;
+
+  width: max-content;
+  min-width: 0;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+
+  overflow: auto;
+}
+
+.editor-more-panel .editor-more-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+
+  min-width: 0;
+  max-width: 100%;
+}
+
+.editor-more-panel .editor-more-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media print {
+  .simple-editor-wrapper {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  .simple-editor-wrapper .simple-editor-toolbar {
+    display: none;
+  }
+
+  .simple-editor-wrapper .simple-editor-viewport {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.simple-editor-wrapper {
+  visibility: visible !important;
+}

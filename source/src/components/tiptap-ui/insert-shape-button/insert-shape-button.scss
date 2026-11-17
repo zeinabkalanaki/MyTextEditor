@@ -1,0 +1,80 @@
+.editor-shape-menu {
+  width: 190px;
+  padding: 8px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+  color: #262626;
+
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+
+  font-family: var(
+    --editor-ui-font,
+    "EditorVazirmatn",
+    Tahoma,
+    sans-serif
+  );
+  text-align: right;
+
+  .editor-shape-menu-title {
+    padding: 6px 10px 10px;
+    color: #71717a;
+    font-size: 12px;
+  }
+
+  .editor-shape-menu-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    min-height: 38px;
+    padding: 6px 10px;
+
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+
+    font: inherit;
+    font-size: 14px;
+    text-align: right;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: #f3f4f6;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: -2px;
+    }
+  }
+
+  .editor-shape-menu-icon {
+    width: 24px;
+    flex: 0 0 24px;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    line-height: 1;
+    text-align: center;
+  }
+}
+
+html.dark .editor-shape-menu,
+body.dark .editor-shape-menu {
+  border-color: #303034;
+  background: #1c1c1e;
+  color: #f2f2f2;
+
+  .editor-shape-menu-title {
+    color: #a1a1aa;
+  }
+
+  .editor-shape-menu-option:hover,
+  .editor-shape-menu-option:focus-visible {
+    background: #303034;
+  }
+}

@@ -1,0 +1,233 @@
+.insert-table {
+  position: relative;
+  display: inline-flex;
+}
+
+.insert-table__popover {
+  position: fixed;
+  z-index: 99999;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: calc(100vw - 16px);
+  padding: 12px;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #1b1d21;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+}
+
+.insert-table__size {
+  margin-bottom: 10px;
+  font-size: 12px;
+  direction: ltr;
+  text-align: start;
+}
+
+.insert-table__grid {
+  display: grid;
+  grid-template-columns: repeat(8, 26px);
+  gap: 5px;
+  width: max-content;
+}
+
+.insert-table__cell {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  background: #f3f4f6;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    outline: 2px solid #7c3aed;
+    outline-offset: 1px;
+  }
+}
+
+.insert-table__cell--selected {
+  border: 2px solid #9333a8;
+  background: #f3e8ff;
+}
+
+.insert-table__footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 12px;
+}
+
+.insert-table__actions {
+  display: grid;
+  gap: 2px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+    text-align: start;
+    cursor: pointer;
+
+    &:hover:not(:disabled),
+    &:focus-visible:not(:disabled) {
+      background: #f3f4f6;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #7c3aed;
+      outline-offset: -2px;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    svg {
+      flex: none;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.insert-table__cell-colors {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.insert-table__cell-colors-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.insert-table__color-swatches {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  direction: ltr;
+}
+
+.insert-table__color-swatch,
+.insert-table__color-clear {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  flex: 0 0 25px;
+  border: 1px solid #9ca3af;
+  border-radius: 5px;
+  cursor: pointer;
+  transition:
+    outline 120ms ease,
+    transform 120ms ease,
+    opacity 120ms ease;
+}
+
+.insert-table__color-swatch:hover:not(:disabled),
+.insert-table__color-clear:hover:not(:disabled) {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+  transform: translateY(-1px);
+}
+
+.insert-table__color-swatch:disabled,
+.insert-table__color-clear:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.insert-table__color-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #374151;
+  font-size: 18px;
+  line-height: 1;
+}
+/* ThemeToggle باید کلاس dark را روی html یا body قرار دهد. */
+.dark .insert-table__popover {
+  background: #1c1c1f;
+  color: #eceef2;
+  border-color: #38383f;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 40%);
+
+  /* اسکرول‌بار و کنترل‌های پیش‌فرض مرورگر */
+  color-scheme: dark;
+
+  /* خانه‌های انتخاب اندازه جدول */
+  .insert-table__cell {
+    background: #27272a;
+    border-color: #62626e;
+
+    &:hover,
+    &:focus-visible {
+      outline-color: #c084fc;
+    }
+  }
+
+  .insert-table__cell--selected {
+    background: #432653;
+    border-color: #c084fc;
+  }
+
+  /* خطوط جداکننده */
+  .insert-table__footer,
+  .insert-table__actions,
+  .insert-table__cell-colors {
+    border-top-color: #38383f;
+  }
+
+  /* عملیات جدول */
+  .insert-table__actions button {
+    &:hover:not(:disabled),
+    &:focus-visible:not(:disabled) {
+      background: #303036;
+    }
+
+    &:focus-visible {
+      outline-color: #c084fc;
+    }
+  }
+
+  /* عنوان انتخاب رنگ سلول */
+  .insert-table__cell-colors-label {
+    color: #c8c8d0;
+  }
+
+  /* کادر نمونه‌رنگ‌ها؛ رنگ خود نمونه‌ها تغییر نمی‌کند */
+  .insert-table__color-swatch,
+  .insert-table__color-clear {
+    border-color: #71717a;
+
+    &:hover:not(:disabled),
+    &:focus-visible:not(:disabled) {
+      outline: 2px solid #c084fc;
+      outline-offset: 2px;
+    }
+  }
+
+  /* دکمه حذف رنگ سلول */
+  .insert-table__color-clear {
+    background: #27272a;
+    color: #eceef2;
+  }
+}
